@@ -239,17 +239,20 @@ int main(int argc, char *argv[]) {
         std::cout<<"Input: X queries, time T, available cores AC "<<std::endl;
         std::cout<<"Output: Minimum cores required to process X queries within time T"<<std::endl;
         std::cout<<"---------------------------------------"<<std::endl;
-        std::cout<<"Please input the number of queries(X): "<<std::endl;
+        std::cout<<"Please input the number of queries (X): "<<std::endl;
         int num_queries;
         std::cin>>num_queries;
         std::cout<<"---------------------------------------"<<std::endl;
-        std::cout<<"Please input the time of duration(T): "<<std::endl;
+        std::cout<<"Please input the time of duration (T): "<<std::endl;
         double time_T;
         std::cin>>time_T;
         std::cout<<"---------------------------------------"<<std::endl;
-        std::cout<<"Please input the number of available cores(AC): "<<std::endl;
+        std::cout<<"Please input the number of available cores (AC): "<<std::endl;
         int num_available_cores;
         std::cin>>num_available_cores;
+        std::cout<<"Please input the number of cores for preprocessing stage (c): "<<std::endl;
+        int num_pre_cores;
+        std::cin>>num_pre_cores;
         std::cout<<"---------------------------------------"<<std::endl;
         std::cout<<"Please input the size of preprocessing set: "<<std::endl;
         int pre_process_size;
@@ -259,7 +262,7 @@ int main(int argc, char *argv[]) {
         if(config.with_rw_idx)
             deserialize_idx();
         */
-        parallel_query_minimum_cores_real(graph, num_queries, time_T, num_available_cores, pre_process_size);
+        parallel_query_minimum_cores_real(graph, num_queries, time_T, num_available_cores, num_pre_cores, pre_process_size);
         INFO("finished query");
     }
     else if (config.action == GEN_SS_QUERY){
