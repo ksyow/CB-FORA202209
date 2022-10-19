@@ -1519,6 +1519,7 @@ void parallel_query_task_minimum_cores_pre(Fora_class& fora_worker , Graph& grap
     int source, temp;
     double push_time, walk_time;
     double check_push_time, check_walk_time;
+    double time_temp;
     double t_max=0;
     double time_start,time_end;
     //Fora_class fora_worker(graph, worker_num);
@@ -1533,7 +1534,7 @@ void parallel_query_task_minimum_cores_pre(Fora_class& fora_worker , Graph& grap
           
         source=Minimum_Cores_workload.queries[head];
         temp=fora_worker.fora_class_query_basic_CLASS(source, push_time, walk_time);
-        //printf("|Thd: %d, head: %d|\n", worker_num, head);
+        //printf("|Thd: %d, head: %d|", worker_num, head);
         //printf("Push time: %.6f, Walk time: %.6f\n", push_time, walk_time);
         check_push_time+=push_time;
         check_walk_time+=walk_time;
@@ -1545,11 +1546,11 @@ void parallel_query_task_minimum_cores_pre(Fora_class& fora_worker , Graph& grap
         time_end=omp_get_wtime();
         time_temp=time_end-time_start;
         if(time_temp>t_max){
-        	t_max=time_temp;
-		}
+            t_max=time_temp;
+	}
     }
     double check_end=omp_get_wtime();
-    printf("check t_max", t_max);
+    printf("check maximum running time among sample queries: %.6f\n", t_max);
     printf("check time in process: %.6f\n", check_end-check_start);
     printf("check average push time in process: %.6f\n", check_push_time/slot_pre);
     printf("check average walk time in process: %.6f\n", check_walk_time/slot_pre);
@@ -1574,9 +1575,9 @@ void parallel_query_task_minimum_cores_rest(Fora_class& fora_worker ,Graph& grap
     //Fora_class fora_worker(graph, worker_num);
     num_q_result=0;
     double push_time, walk_time;
-    if(worker_num==0){
-        printf("---|Thd: %d, L_slots: %d, queries_size: %d|---\n", worker_num, L_slots, total_query);
-    }
+    //if(worker_num==0){
+    //    printf("---|Thd: %d, L_slots: %d, queries_size: %d|---\n", worker_num, L_slots, total_query);
+    //}
         
     for(int i=0; i<L_slots; i++){
         num_q_result+=1;
@@ -1589,8 +1590,8 @@ void parallel_query_task_minimum_cores_rest(Fora_class& fora_worker ,Graph& grap
         }
         source=Minimum_Cores_workload.queries[head];
         temp=fora_worker.fora_class_query_basic_CLASS(source, push_time, walk_time);
-        if(worker_num==0)
-            printf("|Thd: %d, head: %d, slot: %d|", worker_num, head, i);
+        //if(worker_num==0)
+        //    printf("|Thd: %d, head: %d, slot: %d|", worker_num, head, i);
         //fora_query_basic(source, graph);
         //split_line();
     }
@@ -1714,7 +1715,7 @@ void parallel_query_minimum_cores_real(Graph& graph, int _num_queries, double _t
                         OMP_check_time_start_thread=omp_get_wtime();
                         parallel_query_task_minimum_cores_rest(fora_worker, graph, i, num_fora_threads, L_slots, k_queries, query_size, pre_process_size, check_num_query);
                         time_temp=omp_get_wtime()-OMP_check_time_start_thread;
-                        printf("\nCheck thread: %d, average time of query: %.6f\n",i , time_temp/check_num_query);
+                        //printf("\nCheck thread: %d, average time of query: %.6f\n",i , time_temp/check_num_query);
                         t_sum_lock.lock();
                         if(time_temp>t_sum_result)
                             t_sum_result=time_temp;
