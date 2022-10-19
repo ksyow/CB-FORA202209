@@ -1519,9 +1519,12 @@ void parallel_query_task_minimum_cores_pre(Fora_class& fora_worker , Graph& grap
     int source, temp;
     double push_time, walk_time;
     double check_push_time, check_walk_time;
+    double t_max=0;
+    double time_start,time_end;
     //Fora_class fora_worker(graph, worker_num);
     double check_start=omp_get_wtime();
     while(true){
+    	time_start=omp_get_wtime();
         //omp_set_nest_lock(&OMP_workload.lck);     
         head=slot_pre*total_worker_number+worker_num;
         if(head>=check_one_core_range)
@@ -1538,8 +1541,15 @@ void parallel_query_task_minimum_cores_pre(Fora_class& fora_worker , Graph& grap
         //printf("|Thd: %d, source: %d|\n", worker_num, source);
         //fora_query_basic(source, graph);
         //split_line();
+        
+        time_end=omp_get_wtime();
+        time_temp=time_end-time_start;
+        if(time_temp>t_max){
+        	t_max=time_temp;
+		}
     }
     double check_end=omp_get_wtime();
+    printf("check t_max", t_max);
     printf("check time in process: %.6f\n", check_end-check_start);
     printf("check average push time in process: %.6f\n", check_push_time/slot_pre);
     printf("check average walk time in process: %.6f\n", check_walk_time/slot_pre);
@@ -1665,14 +1675,14 @@ void parallel_query_minimum_cores_real(Graph& graph, int _num_queries, double _t
                         printf("\033[0m\033[1;32m -------------------------------------------------------------------------------------\n");
                         printf("\033[0m\033[1;32m Now we calculate C according to the equation\n");
                         //t_s_pre_sum=t_s_pre_sum/(pre_process_size);
-                        int C=ceil(_num_queries*t_s_pre_maximum/_time_T);
+                        int C=ceil(_num_queries*t_s_pre_query_average/_time_T);
                         printf("\033[0m\033[1;32m Check C: %d\n", C);
                         if(_num_available_cores<C){
                             printf("\033[0m\033[1;32m Estimated number of cores to complete %d queries within %fs in the worst-case scenario is %d.\n", _num_queries, _time_T, C);
                             terminal_flag=true;
                         }
                         else{
-                            L_slots=floor((_time_T-t_s_pre_maximum)/t_s_pre_query_average);
+                            L_slots=floor((_time_T-t_s_pre_maximum)/t_s_pre_query_maximum);
                             printf("\033[0m\033[1;32m check L_slots: %.1f\n", L_slots);
                             k_queries=ceil((_num_queries - pre_process_size)/L_slots);
                             printf("\033[0m\033[1;32m check k_queries: %d\n\033[0m", k_queries);
