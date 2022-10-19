@@ -1,0 +1,3 @@
+/home/ksyow/Desktop/minimum-core/CMakeFiles/fora.dir
+/home/ksyow/Desktop/minimum-core/CMakeFiles/edit_cache.dir
+/home/ksyow/Desktop/minimum-core/CMakeFiles/rebuild_cache.dir
